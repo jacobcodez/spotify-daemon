@@ -11,16 +11,17 @@
 
 const STORAGE_KEY = 'segue.store.v1';
 
-// A short palette of section colours in the brat / Y2K / neon register.
+// A muted palette in the Windows XP / Media Player register (Luna blues,
+// teal, olive, amber, slate) — glossy but not neon.
 export const SECTION_COLORS = [
-  '#b0f000', // brat lime
-  '#00e5ff', // clean cyan
-  '#ff36c9', // hot magenta
-  '#ff6a00', // sunset orange
-  '#7c4dff', // electric violet
-  '#12e29a', // liquid mint
-  '#ffd21e', // acid yellow
-  '#ff2d55', // neon red
+  '#3f8bed', // luna blue
+  '#3fa7a0', // teal
+  '#7a9a52', // xp olive
+  '#c79a44', // amber / gold
+  '#8a6fb0', // muted plum
+  '#b06a56', // terracotta
+  '#6f8fb0', // slate blue
+  '#9aa2ac', // silver
 ];
 
 let _store = null;

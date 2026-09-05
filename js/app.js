@@ -422,13 +422,13 @@ function seedIfEmpty() {
 
   const list = store.createList('demo · dawn set');
   const s0 = list.sections[0];
-  store.updateSection(list.id, s0.id, { title: 'ethiopian jazz', color: '#ff6a00' });
+  store.updateSection(list.id, s0.id, { title: 'ethiopian jazz', color: '#c79a44' });
   store.setSectionTracks(list.id, s0.id, ['s1', 's2', 's3']);
 
-  const s1 = store.addSection(list.id, { title: 'drift', color: '#00e5ff', targetLength: 4 });
+  const s1 = store.addSection(list.id, { title: 'drift', color: '#3fa7a0', targetLength: 4 });
   store.setSectionTracks(list.id, s1.id, ['s4', 's5']); // 2 songs, 4 slots → 2 "find" rows
 
-  const s2 = store.addSection(list.id, { title: 'brat', color: '#b0f000', targetLength: 5 });
+  const s2 = store.addSection(list.id, { title: 'brat', color: '#3f8bed', targetLength: 5 });
   store.setSectionTracks(list.id, s2.id, ['s6', 's7']); // 3 empty slots
 }
 

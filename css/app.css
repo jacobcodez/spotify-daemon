@@ -1,28 +1,38 @@
 /* ============================================================================
-   Segue — app.css
-   Vibe: early-2000s grain grunge · Y2K fever dream · Windows 98 · indie sleaze
-         · Charli XCX brat · liquid glass · clean neon.
+   jacob's spotify daemon — app.css
+   Aesthetic: Windows Media Player + Windows XP "Luna" — glossy blue plastic
+   chrome, silver/blue bevels, dark glossy ground. No neon.
    All design knobs live in :root so the whole look tunes from one place.
    ============================================================================ */
 
 :root {
   /* --- ground / ink --- */
-  --bg: #08080b;
-  --bg-2: #0e0e14;
+  --bg: #070b12;
+  --bg-2: #0d1522;
   --ink: #f2f2f5;
   --ink-dim: #a7a7b4;
   --ink-faint: #6c6c7a;
   --hairline: rgba(255, 255, 255, 0.14);
   --hairline-strong: rgba(255, 255, 255, 0.28);
 
-  /* --- signature neon (brat lime) --- */
-  --neon: #b0f000;
-  --neon-ink: #0a0f00;
-  --neon-glow: 0 0 12px rgba(176, 240, 0, 0.55), 0 0 32px rgba(176, 240, 0, 0.25);
+  /* --- signature accent: Windows XP "Luna" blue --- */
+  --accent: #2f8fef;
+  --accent-2: #1f6fd0;
+  --accent-hi: #7cbcff;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(47, 143, 239, 0.18);
+  --accent-line: rgba(47, 143, 239, 0.55);
+  /* glossy plastic sheen for buttons / titlebars (Luna / WMP) */
+  --sheen: linear-gradient(180deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.12) 47%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%);
 
-  /* --- accent glows for hover/active/drag --- */
-  --glow-soft: 0 0 0 1px var(--hairline-strong), 0 8px 30px rgba(0, 0, 0, 0.55);
-  --glow-drag: 0 0 0 1px var(--neon), 0 0 24px rgba(176, 240, 0, 0.35), 0 18px 40px rgba(0, 0, 0, 0.6);
+  /* back-compat aliases so every accent reference resolves to Luna blue */
+  --neon: var(--accent);
+  --neon-ink: var(--accent-ink);
+  --neon-glow: 0 0 0 1px var(--accent-line), 0 4px 14px rgba(31, 111, 208, 0.4);
+
+  /* --- soft shadows for hover/active/drag (glossy, not neon) --- */
+  --glow-soft: 0 0 0 1px var(--hairline-strong), 0 8px 24px rgba(0, 0, 0, 0.5);
+  --glow-drag: 0 0 0 1px var(--accent), 0 4px 16px rgba(31, 111, 208, 0.45), 0 14px 34px rgba(0, 0, 0, 0.5);
 
   /* --- liquid glass --- */
   --glass-bg: rgba(20, 20, 28, 0.55);
@@ -56,29 +66,21 @@
 
 * { box-sizing: border-box; }
 
+/* the hidden attribute must always win over component display rules
+   (e.g. .fab { display:flex } would otherwise override the UA [hidden] rule) */
+[hidden] { display: none !important; }
+
 html, body { height: 100%; }
 
 body {
   margin: 0;
-  background: radial-gradient(120% 90% at 50% -10%, #14141d 0%, var(--bg) 60%);
+  /* WMP-style dark glossy ground with a faint blue wash from the top */
+  background: linear-gradient(180deg, #12203a 0%, #0b1220 42%, var(--bg) 100%) fixed;
   color: var(--ink);
   font-family: var(--ui);
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-}
-
-/* film-grain / blown-flash overlay over everything */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.09;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-size: 180px 180px;
 }
 
 button { font-family: inherit; color: inherit; cursor: pointer; }
@@ -94,11 +96,10 @@ input, select, textarea { font-family: inherit; }
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  background: var(--glass-bg-2);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border-bottom: var(--glass-border);
-  box-shadow: var(--glass-inner), 0 6px 24px rgba(0, 0, 0, 0.45);
+  /* glossy WMP/Luna chrome bar */
+  background: linear-gradient(180deg, #2c405f 0%, #16233a 52%, #0e1828 100%);
+  border-bottom: 1px solid #05090f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .brand {
@@ -108,40 +109,45 @@ input, select, textarea { font-family: inherit; }
   letter-spacing: 0.3px;
   text-transform: lowercase;
   white-space: nowrap;
-  filter: blur(0.35px);
   color: var(--ink);
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }
-.brand b { color: var(--neon); text-shadow: var(--neon-glow); }
+.brand b { color: var(--accent-hi); text-shadow: 0 0 10px rgba(47, 143, 239, 0.5); }
 
 .topbar .spacer { flex: 1; }
 
 .topbar select,
 .topbar .btn {
   height: 34px;
-  border-radius: var(--radius-sm);
-  border: var(--glass-border);
-  background: var(--glass-bg);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: var(--sheen), linear-gradient(180deg, rgba(70, 92, 124, 0.6), rgba(24, 34, 52, 0.72));
   color: var(--ink);
   padding: 0 12px;
   font-size: 13px;
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  transition: box-shadow 0.15s, transform 0.08s, background 0.15s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38), 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: filter 0.12s, transform 0.08s;
 }
-.topbar .btn:hover { box-shadow: var(--glow-soft); }
+.topbar select:hover,
+.topbar .btn:hover { filter: brightness(1.14); }
 .topbar .btn:active { transform: translateY(1px); }
 
+/* glossy Luna/WMP plastic button */
 .btn-neon {
-  background: var(--neon);
-  color: var(--neon-ink);
-  border: none;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  box-shadow: var(--neon-glow);
+  position: relative;
+  background:
+    var(--sheen),
+    linear-gradient(180deg, var(--accent-hi) 0%, var(--accent) 50%, var(--accent-2) 100%);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent-2);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 5px rgba(0, 0, 0, 0.4);
 }
-.btn-neon:hover { box-shadow: 0 0 18px rgba(176, 240, 0, 0.85), 0 0 44px rgba(176, 240, 0, 0.4); }
-.btn-neon:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
+.btn-neon:hover { filter: brightness(1.08); }
+.btn-neon:active { box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45); }
+.btn-neon:disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none; cursor: not-allowed; }
 
 .pill {
   font-family: var(--mono);
@@ -151,7 +157,7 @@ input, select, textarea { font-family: inherit; }
   border: 1px solid var(--hairline);
   color: var(--ink-dim);
 }
-.pill.ok { color: var(--neon); border-color: rgba(176, 240, 0, 0.5); }
+.pill.ok { color: var(--accent-hi); border-color: var(--accent-line); }
 
 /* --------------------------------------------------------------- canvas */
 
@@ -167,7 +173,6 @@ input, select, textarea { font-family: inherit; }
   font-weight: 900;
   font-size: 30px;
   letter-spacing: -0.5px;
-  filter: blur(0.4px);
   margin: 6px 2px 4px;
   border: none;
   background: transparent;
@@ -175,7 +180,7 @@ input, select, textarea { font-family: inherit; }
   width: 100%;
   text-shadow: 0 0 26px rgba(255, 255, 255, 0.1);
 }
-.list-title:focus { outline: none; color: var(--neon); text-shadow: var(--neon-glow); }
+.list-title:focus { outline: none; color: var(--accent-hi); }
 
 .list-sub {
   font-family: var(--mono);
@@ -223,11 +228,13 @@ input, select, textarea { font-family: inherit; }
   padding: 0 6px 0 10px;
   cursor: grab;
   color: #06060a;
-  /* raised strip in the section colour — reads as a physical seam between songs */
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--sec-color, #888) 88%, white 12%),
-    color-mix(in srgb, var(--sec-color, #888) 70%, black 14%));
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  /* glossy Luna strip in the section colour — a physical seam between songs */
+  background:
+    var(--sheen),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--sec-color, #888) 82%, white 18%),
+      color-mix(in srgb, var(--sec-color, #888) 70%, black 16%));
+  border-top: 1px solid rgba(255, 255, 255, 0.55);
   border-bottom: 1px solid var(--bevel-dark);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -303,8 +310,14 @@ input, select, textarea { font-family: inherit; }
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 .song:nth-of-type(even) { background: rgba(255, 255, 255, 0.03); } /* XP zebra */
-.song:hover { background: rgba(176, 240, 0, 0.11); box-shadow: inset 2px 0 0 var(--neon); }
-.song.sortable-chosen { background: rgba(176, 240, 0, 0.16); box-shadow: inset 0 0 0 1px var(--neon); cursor: grabbing; }
+.song:hover { background: var(--accent-soft); box-shadow: inset 2px 0 0 var(--accent); }
+/* XP Explorer selection: solid Luna blue gradient, white text */
+.song.sortable-chosen {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px var(--accent-hi);
+  cursor: grabbing;
+}
 .song.sortable-ghost { opacity: 0.28; }
 
 .song .art {
@@ -336,8 +349,8 @@ input, select, textarea { font-family: inherit; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.chip.bpm { color: var(--neon); border-color: rgba(176, 240, 0, 0.4); }
-.chip[contenteditable]:focus { outline: none; border-color: var(--neon); color: var(--ink); }
+.chip.bpm { color: var(--accent-hi); border-color: var(--accent-line); }
+.chip[contenteditable]:focus { outline: none; border-color: var(--accent); color: var(--ink); }
 
 .song .rm {
   flex: none; width: 20px; height: 20px; border-radius: 3px;
@@ -409,21 +422,23 @@ input, select, textarea { font-family: inherit; }
   gap: 10px;
   padding: 8px;
   border-radius: 999px;
-  background: var(--glass-bg-2);
+  background: linear-gradient(180deg, rgba(44, 64, 95, 0.92), rgba(14, 24, 40, 0.94));
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--glass-inner), 0 12px 40px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 12px 34px rgba(0, 0, 0, 0.55);
 }
 .fab {
-  height: 38px; padding: 0 16px; border-radius: 999px;
-  border: 1px solid var(--hairline); background: var(--glass-bg);
+  height: 38px; padding: 0 16px; border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: var(--sheen), linear-gradient(180deg, rgba(70, 92, 124, 0.65), rgba(24, 34, 52, 0.75));
   color: var(--ink); font-size: 13px; font-weight: 700;
   display: flex; align-items: center; gap: 7px;
-  transition: box-shadow 0.14s, transform 0.06s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 5px rgba(0, 0, 0, 0.4);
+  transition: filter 0.12s, transform 0.06s;
 }
-.fab:hover { box-shadow: var(--glow-soft); }
-.fab:active { transform: translateY(1px); }
+.fab:hover { filter: brightness(1.14); }
+.fab:active { transform: translateY(1px); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4); }
 
 /* dialogs / search panel */
 dialog {
@@ -455,7 +470,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); -webkit-backdrop-filter: blu
   height: 36px; padding: 0 12px; border-radius: var(--radius-sm);
   background: rgba(0, 0, 0, 0.3); border: 1px solid var(--hairline); color: var(--ink);
 }
-.field input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 3px rgba(176, 240, 0, 0.15); }
+.field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
 .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .swatch {
@@ -478,10 +493,14 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); -webkit-backdrop-filter: blu
 .muted { color: var(--ink-faint); font-size: 12px; }
 .center { text-align: center; }
 
-/* thin neon scrollbars */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: rgba(176, 240, 0, 0.25); border-radius: 999px; }
-::-webkit-scrollbar-track { background: transparent; }
+/* XP-style scrollbars */
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--accent-hi), var(--accent-2));
+  border: 1px solid var(--accent-2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.04); }
 
 /* toast */
 .toast {
