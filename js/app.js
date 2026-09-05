@@ -1,9 +1,9 @@
 // app.js — glue: topbar, dialogs, Spotify connect / import / push, sample seed.
 
-import * as store from './store.js';
-import * as canvas from './canvas.js';
-import * as auth from './auth.js';
-import * as api from './spotify.js';
+import * as store from './store.js?v=3';
+import * as canvas from './canvas.js?v=3';
+import * as auth from './auth.js?v=3';
+import * as api from './spotify.js?v=3';
 
 const $ = (s) => document.querySelector(s);
 const toast = canvas.toast;
@@ -335,7 +335,10 @@ async function importPlaylist(pl, btn) {
     renderCurrent();
     toast(`imported ${tracks.length} tracks`);
   } catch (e) {
-    toast('import failed: ' + e.message, true);
+    const msg = /403/.test(e.message)
+      ? "can't read this one — Spotify blocks API access to its own playlists (Discover Weekly, Daily Mix, editorial). Try a playlist you created."
+      : 'import failed: ' + e.message;
+    toast(msg, true);
     btn.disabled = false; btn.textContent = 'import';
   }
 }

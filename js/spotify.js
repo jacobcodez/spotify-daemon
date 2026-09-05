@@ -1,7 +1,7 @@
 // spotify.js — thin Web API wrapper. All calls run client-side with the PKCE
 // token (Spotify's API allows browser CORS).
 
-import { getAccessToken } from './auth.js';
+import { getAccessToken } from './auth.js?v=3';
 
 const API = 'https://api.spotify.com/v1';
 
@@ -43,7 +43,7 @@ export async function myPlaylists() {
 // every track of a playlist as TrackMeta (paginated 100s)
 export async function playlistTracks(id) {
   const out = [];
-  let url = `/playlists/${id}/tracks?limit=100&fields=next,items(track(id,uri,name,duration_ms,artists(name,id),album(images)))`;
+  let url = `/playlists/${id}/tracks?limit=50&fields=next,items(track(id,uri,name,duration_ms,artists(name,id),album(images)))`;
   while (url) {
     const page = await api(url);
     for (const item of page.items) {
@@ -56,7 +56,9 @@ export async function playlistTracks(id) {
   return out;
 }
 
-export async function search(q, limit = 20) {
+// Note: new Spotify apps cap the search `limit` low (values >~10 return
+// 400 "Invalid limit"), so keep this at 10.
+export async function search(q, limit = 10) {
   if (!q.trim()) return [];
   const page = await api(`/search?type=track&limit=${limit}&q=${encodeURIComponent(q)}`);
   return (page.tracks?.items || []).map(trackToMeta);

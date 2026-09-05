@@ -1,7 +1,7 @@
 // canvas.js — renders the always-sectioned canvas and wires drag-and-drop.
 // The visual arranging surface is the heart of the app; Spotify is plumbing.
 
-import * as store from './store.js';
+import * as store from './store.js?v=3';
 
 let _listId = null;
 let _handlers = {}; // { openSectionDialog, openSearch }
