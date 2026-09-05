@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>jacob's spotify daemon</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <!-- SortableJS: robust nested drag-and-drop -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js" defer></script>
+</head>
+<body>
+  <!-- top bar -->
+  <header class="topbar">
+    <div class="brand">jacob's spotify <b>daemon</b></div>
+
+    <select id="listPicker" class="" title="Switch list"></select>
+    <button class="btn" id="newListBtn" title="New empty list">+ list</button>
+
+    <div class="spacer"></div>
+
+    <span class="pill" id="authPill">offline</span>
+    <button class="btn" id="connectBtn">Connect Spotify</button>
+    <button class="btn" id="importBtn" hidden>Import playlist</button>
+    <button class="btn btn-neon" id="pushBtn" disabled>▲ Push to Spotify</button>
+  </header>
+
+  <!-- the always-sectioned canvas -->
+  <main class="canvas-wrap">
+    <input class="list-title" id="listTitle" placeholder="untitled list" />
+    <div class="list-sub" id="listSub">local · not linked to Spotify</div>
+    <div class="sections" id="sections"></div>
+  </main>
+
+  <!-- floating action row -->
+  <div class="fab-row">
+    <button class="fab" id="addSongFab">🔎 add song</button>
+    <button class="fab" id="addSectionFab">＋ empty section</button>
+    <button class="fab" id="pasteSectionFab" hidden>⎘ paste section</button>
+    <button class="fab" id="moreFab">⋯ data</button>
+  </div>
+
+  <!-- section toolbar dialog (recolor / length / rename) -->
+  <dialog id="secDialog">
+    <div class="dlg-head">
+      <h3>section</h3>
+      <button class="btn x" data-close>✕</button>
+    </div>
+    <div class="dlg-body">
+      <div class="field">
+        <label>title</label>
+        <input type="text" id="secTitle" placeholder="untitled section" />
+      </div>
+      <div class="field">
+        <label>colour</label>
+        <div class="swatches" id="secSwatches"></div>
+      </div>
+      <div class="field">
+        <label>target length (empty slots appear below the songs)</label>
+        <input type="number" id="secLength" min="0" step="1" />
+      </div>
+      <div style="display:flex; gap:10px; margin-top:4px;">
+        <button class="btn btn-neon" id="secSave">save</button>
+        <button class="btn" data-close>cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- add-song search dialog -->
+  <dialog id="searchDialog">
+    <div class="dlg-head">
+      <h3>add songs</h3>
+      <button class="btn x" data-close>✕</button>
+    </div>
+    <div class="dlg-body">
+      <div class="field">
+        <label>into section</label>
+        <select id="searchTargetSection"></select>
+      </div>
+      <div class="field">
+        <label>search Spotify</label>
+        <input type="search" id="searchInput" placeholder="track or artist…" autocomplete="off" />
+      </div>
+      <div class="results" id="searchResults">
+        <div class="muted center" id="searchHint">connect Spotify to search, or add tracks manually.</div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- import playlist dialog -->
+  <dialog id="importDialog">
+    <div class="dlg-head">
+      <h3>import a Spotify playlist</h3>
+      <button class="btn x" data-close>✕</button>
+    </div>
+    <div class="dlg-body">
+      <div class="results" id="importResults"><div class="muted center">loading your playlists…</div></div>
+    </div>
+  </dialog>
+
+  <!-- data / backup dialog -->
+  <dialog id="dataDialog">
+    <div class="dlg-head">
+      <h3>data</h3>
+      <button class="btn x" data-close>✕</button>
+    </div>
+    <div class="dlg-body">
+      <p class="muted">Everything lives in this browser. Export a JSON backup, or import one on another machine.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-neon" id="exportBtn">⬇ export JSON</button>
+        <button class="btn" id="importJsonBtn">⬆ import JSON</button>
+        <button class="btn" id="renameListBtn">rename list</button>
+        <button class="btn" id="deleteListBtn">delete list</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json" hidden />
+    </div>
+  </dialog>
+
+  <!-- generic in-app confirm (native confirm() is blocked in sandboxed previews) -->
+  <dialog id="confirmDialog">
+    <div class="dlg-head">
+      <h3 id="confirmTitle">confirm</h3>
+      <button class="btn x" data-close>✕</button>
+    </div>
+    <div class="dlg-body">
+      <p id="confirmMsg" style="margin:0;"></p>
+      <div style="display:flex; gap:10px; margin-top:4px;">
+        <button class="btn btn-neon" id="confirmYes">yes</button>
+        <button class="btn" id="confirmNo">cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- config: copy config.example.js → config.js and fill in your client id -->
+  <script src="config.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

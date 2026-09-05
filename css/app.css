@@ -1,0 +1,496 @@
+/* ============================================================================
+   Segue — app.css
+   Vibe: early-2000s grain grunge · Y2K fever dream · Windows 98 · indie sleaze
+         · Charli XCX brat · liquid glass · clean neon.
+   All design knobs live in :root so the whole look tunes from one place.
+   ============================================================================ */
+
+:root {
+  /* --- ground / ink --- */
+  --bg: #08080b;
+  --bg-2: #0e0e14;
+  --ink: #f2f2f5;
+  --ink-dim: #a7a7b4;
+  --ink-faint: #6c6c7a;
+  --hairline: rgba(255, 255, 255, 0.14);
+  --hairline-strong: rgba(255, 255, 255, 0.28);
+
+  /* --- signature neon (brat lime) --- */
+  --neon: #b0f000;
+  --neon-ink: #0a0f00;
+  --neon-glow: 0 0 12px rgba(176, 240, 0, 0.55), 0 0 32px rgba(176, 240, 0, 0.25);
+
+  /* --- accent glows for hover/active/drag --- */
+  --glow-soft: 0 0 0 1px var(--hairline-strong), 0 8px 30px rgba(0, 0, 0, 0.55);
+  --glow-drag: 0 0 0 1px var(--neon), 0 0 24px rgba(176, 240, 0, 0.35), 0 18px 40px rgba(0, 0, 0, 0.6);
+
+  /* --- liquid glass --- */
+  --glass-bg: rgba(20, 20, 28, 0.55);
+  --glass-bg-2: rgba(28, 28, 40, 0.7);
+  --glass-blur: blur(18px) saturate(1.6);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.16);
+  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 24px rgba(255, 255, 255, 0.03);
+
+  /* --- Win98 bevel --- */
+  --bevel-light: rgba(255, 255, 255, 0.55);
+  --bevel-dark: rgba(0, 0, 0, 0.55);
+
+  /* --- geometry --- */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --gap: 14px;
+  --canvas-max: 760px;
+
+  /* --- type --- */
+  --mono: "SFMono-Regular", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: Arial, "Helvetica Neue", Helvetica, system-ui, sans-serif;
+  --ui: Tahoma, Geneva, Verdana, "DejaVu Sans", sans-serif; /* XP UI voice */
+
+  /* uniform row rhythm — the whole point of the list view */
+  --row-h: 40px;
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ base */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: radial-gradient(120% 90% at 50% -10%, #14141d 0%, var(--bg) 60%);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* film-grain / blown-flash overlay over everything */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 180px 180px;
+}
+
+button { font-family: inherit; color: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* ------------------------------------------------------------ top bar */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--glass-bg-2);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: var(--glass-border);
+  box-shadow: var(--glass-inner), 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+.brand {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  text-transform: lowercase;
+  white-space: nowrap;
+  filter: blur(0.35px);
+  color: var(--ink);
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+}
+.brand b { color: var(--neon); text-shadow: var(--neon-glow); }
+
+.topbar .spacer { flex: 1; }
+
+.topbar select,
+.topbar .btn {
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 13px;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  transition: box-shadow 0.15s, transform 0.08s, background 0.15s;
+}
+.topbar .btn:hover { box-shadow: var(--glow-soft); }
+.topbar .btn:active { transform: translateY(1px); }
+
+.btn-neon {
+  background: var(--neon);
+  color: var(--neon-ink);
+  border: none;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  box-shadow: var(--neon-glow);
+}
+.btn-neon:hover { box-shadow: 0 0 18px rgba(176, 240, 0, 0.85), 0 0 44px rgba(176, 240, 0, 0.4); }
+.btn-neon:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
+
+.pill {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  color: var(--ink-dim);
+}
+.pill.ok { color: var(--neon); border-color: rgba(176, 240, 0, 0.5); }
+
+/* --------------------------------------------------------------- canvas */
+
+.canvas-wrap {
+  position: relative;
+  max-width: var(--canvas-max);
+  margin: 0 auto;
+  padding: 22px 16px 160px;
+}
+
+.list-title {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: -0.5px;
+  filter: blur(0.4px);
+  margin: 6px 2px 4px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  width: 100%;
+  text-shadow: 0 0 26px rgba(255, 255, 255, 0.1);
+}
+.list-title:focus { outline: none; color: var(--neon); text-shadow: var(--neon-glow); }
+
+.list-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin: 0 2px 18px;
+}
+
+/* the master list — ONE continuous, framed list-view (XP sunken client area).
+   No per-song cards, no gaps: equidistant rows, thin subheadings squeezed in. */
+.sections {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-2);
+  /* sunken bevel: dark top/left, light bottom/right — the classic recessed field */
+  border-top: 2px solid var(--bevel-dark);
+  border-left: 2px solid var(--bevel-dark);
+  border-right: 2px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.55), 0 20px 55px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------- section = a colour band only */
+
+.section {
+  position: relative;
+  /* vibe gradient: this colour → the next section's colour, flush with no chrome,
+     so the whole list reads as one continuous blend behind the rows */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sec-color, #666) 22%, transparent) 0%,
+    color-mix(in srgb, var(--sec-next, var(--sec-color, #666)) 18%, transparent) 100%
+  );
+}
+
+/* ------------------------------- subheading: a slim divider between the rows */
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0 6px 0 10px;
+  cursor: grab;
+  color: #06060a;
+  /* raised strip in the section colour — reads as a physical seam between songs */
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--sec-color, #888) 88%, white 12%),
+    color-mix(in srgb, var(--sec-color, #888) 70%, black 14%));
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid var(--bevel-dark);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+.sec-head:active { cursor: grabbing; }
+.sec-head.sortable-chosen { box-shadow: var(--glow-drag); }
+
+.sec-divider {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: transparent;
+  border: none;
+  color: inherit;
+}
+.sec-divider:focus { outline: 1px dashed rgba(0, 0, 0, 0.5); }
+
+.sec-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* tiny Win98 controls — hidden until the subheading is hovered, to stay slim */
+.sec-btns { display: flex; gap: 3px; opacity: 0; transition: opacity 0.12s; }
+.sec-head:hover .sec-btns { opacity: 1; }
+.sq {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  line-height: 1;
+  color: #0a0a0a;
+  background: color-mix(in srgb, var(--sec-color, #999) 55%, white 45%);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+  border-right: 1px solid var(--bevel-dark);
+  border-bottom: 1px solid var(--bevel-dark);
+  border-radius: 1px;
+}
+.sq:hover { background: #fff; }
+.sq:active {
+  border-top: 1px solid var(--bevel-dark);
+  border-left: 1px solid var(--bevel-dark);
+  border-right: 1px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* rows stack flush — no padding, no gaps */
+.sec-body { display: flex; flex-direction: column; min-height: 2px; }
+
+/* --------------------------------- song row: equidistant, flush, list-view */
+
+.song {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--row-h);
+  padding: 0 10px;
+  cursor: grab;
+  color: var(--ink);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.song:nth-of-type(even) { background: rgba(255, 255, 255, 0.03); } /* XP zebra */
+.song:hover { background: rgba(176, 240, 0, 0.11); box-shadow: inset 2px 0 0 var(--neon); }
+.song.sortable-chosen { background: rgba(176, 240, 0, 0.16); box-shadow: inset 0 0 0 1px var(--neon); cursor: grabbing; }
+.song.sortable-ghost { opacity: 0.28; }
+
+.song .art {
+  width: 28px; height: 28px; flex: none;
+  border-radius: 3px;
+  object-fit: cover;
+  background: #1a1a22;
+  border: 1px solid var(--hairline);
+}
+.song .idx {
+  flex: none; width: 20px; text-align: right;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+}
+.song .meta { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 8px; overflow: hidden; }
+.song .title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+.song .artist { font-size: 12px; color: var(--ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+.song .chips { display: flex; gap: 6px; align-items: center; flex: none; }
+
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 2px; /* squarer, less pill-y — reads less "AI" */
+  border: 1px solid var(--hairline);
+  color: var(--ink-dim);
+  background: rgba(0, 0, 0, 0.25);
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chip.bpm { color: var(--neon); border-color: rgba(176, 240, 0, 0.4); }
+.chip[contenteditable]:focus { outline: none; border-color: var(--neon); color: var(--ink); }
+
+.song .rm {
+  flex: none; width: 20px; height: 20px; border-radius: 3px;
+  background: transparent; border: 1px solid transparent; color: var(--ink-faint);
+  font-size: 13px; line-height: 1; display: grid; place-items: center;
+  opacity: 0;
+}
+.song:hover .rm { opacity: 1; border-color: var(--hairline); }
+.song .rm:hover { color: #ff4d6d; border-color: rgba(255, 77, 109, 0.5); }
+
+/* --- empty slot: same row rhythm, dashed placeholder --- */
+
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--row-h);
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: color-mix(in srgb, var(--sec-color, #aaa) 70%, white 30%);
+  opacity: 0.72;
+}
+.slot:hover { opacity: 1; background: rgba(255, 255, 255, 0.03); }
+.slot .slotart {
+  width: 28px; height: 28px; flex: none; border-radius: 3px;
+  border: 1.5px dashed color-mix(in srgb, var(--sec-color, #888) 55%, white 15%);
+  display: grid; place-items: center; font-size: 13px;
+}
+
+/* --- resize grip at the bottom of a section: drag to add/remove slots --- */
+
+.sec-resize {
+  height: 11px;
+  cursor: ns-resize;
+  display: grid;
+  place-items: center;
+  touch-action: none; /* let pointer capture own the drag */
+}
+.sec-resize::after {
+  content: "";
+  width: 40px;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--sec-color, #888) 55%, white 25%);
+  opacity: 0;
+  transition: opacity 0.12s, width 0.12s, box-shadow 0.12s;
+}
+.section:hover .sec-resize::after { opacity: 0.45; }
+.sec-resize:hover::after,
+.sec-resize.dragging::after {
+  opacity: 1;
+  width: 74px;
+  height: 4px;
+  box-shadow: 0 0 10px var(--sec-color);
+}
+
+/* ------------------------------------------------------- floating panels */
+
+.fab-row {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 45;
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 999px;
+  background: var(--glass-bg-2);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-inner), 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+.fab {
+  height: 38px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid var(--hairline); background: var(--glass-bg);
+  color: var(--ink); font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 7px;
+  transition: box-shadow 0.14s, transform 0.06s;
+}
+.fab:hover { box-shadow: var(--glow-soft); }
+.fab:active { transform: translateY(1px); }
+
+/* dialogs / search panel */
+dialog {
+  border: var(--glass-border);
+  border-radius: var(--radius);
+  background: var(--glass-bg-2);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: var(--ink);
+  box-shadow: var(--glass-inner), 0 30px 80px rgba(0, 0, 0, 0.7);
+  padding: 0;
+  max-width: 560px;
+  width: calc(100% - 32px);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.dlg-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-bottom: var(--glass-border);
+}
+.dlg-head h3 { margin: 0; font-size: 15px; font-weight: 800; }
+.dlg-head .x { margin-left: auto; }
+.dlg-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+.field input[type="text"],
+.field input[type="number"],
+.field input[type="search"] {
+  height: 36px; padding: 0 12px; border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3); border: 1px solid var(--hairline); color: var(--ink);
+}
+.field input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 3px rgba(176, 240, 0, 0.15); }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch {
+  width: 30px; height: 30px; border-radius: 8px; border: 2px solid transparent;
+  box-shadow: 0 0 0 1px var(--hairline);
+}
+.swatch.sel { border-color: #fff; box-shadow: 0 0 14px currentColor; }
+
+/* search results */
+.results { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow: auto; }
+.result {
+  display: flex; align-items: center; gap: 10px; padding: 6px 8px;
+  border-radius: var(--radius-sm); border: 1px solid transparent;
+}
+.result:hover { border-color: var(--hairline); background: rgba(255, 255, 255, 0.04); }
+.result .art { width: 38px; height: 38px; border-radius: 5px; object-fit: cover; background: #1a1a22; }
+.result .meta { flex: 1; min-width: 0; }
+.result .add { margin-left: auto; }
+
+.muted { color: var(--ink-faint); font-size: 12px; }
+.center { text-align: center; }
+
+/* thin neon scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(176, 240, 0, 0.25); border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* toast */
+.toast {
+  position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%);
+  z-index: 60; padding: 10px 16px; border-radius: 999px;
+  background: var(--glass-bg-2); border: var(--glass-border);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  font-size: 13px; box-shadow: var(--glass-inner), 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.err { border-color: rgba(255, 77, 109, 0.6); color: #ffb3c1; }
