@@ -3,6 +3,6 @@
 // client id below. Until you do, the app runs fully offline (canvas + local
 // editing) and shows "no config" — Connect/Import/Push stay dormant.
 window.SEGUE_CONFIG = {
-  clientId: '', // ← paste your Spotify Client ID here
+  clientId: '15f3f4f354684052a77f3d1d6b245c09', // Spotify Client ID (public/safe under PKCE)
   redirectUri: location.origin + location.pathname,
 };
