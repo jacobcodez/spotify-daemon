@@ -7,13 +7,14 @@ const API = 'https://api.spotify.com/v1';
 
 async function api(path, opts = {}) {
   const token = await getAccessToken();
+  const headers = { Authorization: `Bearer ${token}`, ...(opts.headers || {}) };
+  // Only send a JSON content-type when there's actually a body. Sending it on a
+  // bodyless GET (e.g. /search) makes Spotify mis-parse the request and return
+  // misleading 400s like {"error":{"message":"Invalid limit"}}.
+  if (opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
   const res = await fetch(path.startsWith('http') ? path : API + path, {
     ...opts,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      ...(opts.headers || {}),
-    },
+    headers,
   });
   if (res.status === 204) return null;
   if (!res.ok) {
