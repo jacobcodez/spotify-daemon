@@ -1,7 +1,7 @@
 // spotify.js — thin Web API wrapper. All calls run client-side with the PKCE
 // token (Spotify's API allows browser CORS).
 
-import { getAccessToken } from './auth.js?v=3';
+import { getAccessToken } from './auth.js?v=4';
 
 const API = 'https://api.spotify.com/v1';
 

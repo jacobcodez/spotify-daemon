@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>jacob's spotify daemon</title>
-  <link rel="stylesheet" href="css/app.css?v=3" />
+  <link rel="stylesheet" href="css/app.css?v=4" />
   <!-- SortableJS: robust nested drag-and-drop -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js" defer></script>
 </head>
@@ -130,10 +130,13 @@
     </div>
   </dialog>
 
+  <!-- offscreen Spotify embed used purely as the audio engine (driven by album-art clicks) -->
+  <div id="sp-embed-wrap" aria-hidden="true"><div id="sp-embed"></div></div>
+
   <div class="toast" id="toast"></div>
 
   <!-- config: copy config.example.js → config.js and fill in your client id -->
-  <script src="config.js?v=3"></script>
-  <script type="module" src="js/app.js?v=3"></script>
+  <script src="config.js?v=4"></script>
+  <script type="module" src="js/app.js?v=4"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 // app.js — glue: topbar, dialogs, Spotify connect / import / push, sample seed.
 
-import * as store from './store.js?v=3';
-import * as canvas from './canvas.js?v=3';
-import * as auth from './auth.js?v=3';
-import * as api from './spotify.js?v=3';
+import * as store from './store.js?v=4';
+import * as canvas from './canvas.js?v=4';
+import * as auth from './auth.js?v=4';
+import * as api from './spotify.js?v=4';
 
 const $ = (s) => document.querySelector(s);
 const toast = canvas.toast;

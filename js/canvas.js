@@ -1,7 +1,8 @@
 // canvas.js — renders the always-sectioned canvas and wires drag-and-drop.
 // The visual arranging surface is the heart of the app; Spotify is plumbing.
 
-import * as store from './store.js?v=3';
+import * as store from './store.js?v=4';
+import * as player from './player.js?v=4';
 
 let _listId = null;
 let _handlers = {}; // { openSectionDialog, openSearch }
@@ -35,6 +36,7 @@ export function render(listId) {
   });
 
   mountSortables();
+  updatePlayIcons(player.state());
 }
 
 // ---- section -------------------------------------------------------------
@@ -164,10 +166,22 @@ function renderSong(trackId, sectionId, no) {
 
   const idx = el('span', 'idx', no != null ? String(no) : '');
 
+  // album art doubles as a play/pause control
+  const artBtn = el('button', 'art-btn');
+  artBtn.type = 'button';
   const art = el('img', 'art');
   art.alt = '';
   art.loading = 'lazy';
   if (t.albumArt) art.src = t.albumArt;
+  const ov = el('span', 'art-ov', '▶');
+  artBtn.append(art, ov);
+  artBtn.title = 'play / pause';
+  artBtn.addEventListener('pointerdown', (e) => e.stopPropagation()); // don't start a drag
+  artBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const ok = player.toggle(trackId, t.uri);
+    if (!ok) toast('no preview available for this track', true);
+  });
 
   const meta = el('div', 'meta');
   meta.append(
@@ -194,9 +208,22 @@ function renderSong(trackId, sectionId, no) {
     render(_listId);
   });
 
-  node.append(idx, art, meta, chips, rm);
+  node.append(idx, artBtn, meta, chips, rm);
   return node;
 }
+
+// reflect playback state onto the album-art controls (no full re-render)
+function updatePlayIcons({ currentId, paused }) {
+  document.querySelectorAll('#sections .song').forEach((node) => {
+    const btn = node.querySelector('.art-btn');
+    if (!btn) return;
+    const playing = node.dataset.trackId === currentId && !paused;
+    btn.classList.toggle('playing', playing);
+    const ov = btn.querySelector('.art-ov');
+    if (ov) ov.textContent = playing ? '⏸' : '▶';
+  });
+}
+player.onState(updatePlayIcons);
 
 function editableChip(cls, value, placeholderKind, onCommit) {
   const chip = el('span', `chip ${cls}`.trim());
